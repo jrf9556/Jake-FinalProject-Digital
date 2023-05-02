@@ -1,0 +1,83 @@
+#include "BetterButton.h"
+
+int buttonPin1 = 33;
+int buttonPin2 = 34;
+int buttonPin3 = 35;
+BetterButton button1(buttonPin1, 0);
+BetterButton button2(buttonPin2, 1);
+BetterButton button3(buttonPin3, 2);
+
+int ledPins[3] = { 27, 26, 25 };
+
+int playButton = 31;
+BetterButton button4(playButton, 3);
+
+int recordButton = 30;
+BetterButton button5(recordButton, 4);
+
+
+int loopButton = 32;
+BetterButton button6(loopButton, 5);
+
+
+int metroButton = 29;
+BetterButton button7(metroButton, 6);
+
+
+int beginButton = 28;
+BetterButton button8(beginButton, 7);
+
+int midiNotes[8] = { 37, 43, 54, 10, 11, 12, 13, 14 };
+
+
+void setup() {
+  Serial.begin(9600);
+
+  for (int i = 0; i < 3; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+
+  button1.pressHandler(onPress);
+  button1.releaseHandler(onRelease);
+  button2.pressHandler(onPress);
+  button2.releaseHandler(onRelease);
+  button3.pressHandler(onPress);
+  button3.releaseHandler(onRelease);
+  button4.pressHandler(onPress);
+  button4.releaseHandler(onRelease);
+  button5.pressHandler(onPress);
+  button5.releaseHandler(onRelease);
+  button6.pressHandler(onPress);
+  button6.releaseHandler(onRelease);
+  button7.pressHandler(onPress);
+  button7.releaseHandler(onRelease);
+  button8.pressHandler(onPress);
+  button8.releaseHandler(onRelease);
+}
+
+void loop() {
+  button1.process();
+  button2.process();
+  button3.process();
+  button4.process();
+  button5.process();
+  button6.process();
+  button7.process();
+  button8.process();
+}
+
+void onPress(int val) {
+  Serial.print(val);
+  Serial.println(" on");
+  usbMIDI.sendNoteOn(midiNotes[val], 127, 1);
+  delay(10);
+  digitalWrite(ledPins[val], HIGH);
+}
+
+void onRelease(int val) {
+  Serial.print(val);
+  Serial.println(" off");
+  usbMIDI.sendNoteOff(midiNotes[val], 127, 1);
+  delay(10);
+  digitalWrite(ledPins[val], LOW);
+}
